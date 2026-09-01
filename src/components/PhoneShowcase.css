@@ -1,0 +1,329 @@
+/* ─── Interactive Android product showcase ─────────────────────────────── */
+.ph {
+  margin: clamp(28px, 4vw, 44px) 0;
+}
+
+/* Stage — the phone floats on a soft accent-lit ground */
+.ph__stage {
+  position: relative;
+  min-height: clamp(460px, 62vh, 660px);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  border-radius: 20px;
+  border: 1px solid var(--ink-10);
+  background:
+    radial-gradient(130% 90% at 50% 8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 58%),
+    radial-gradient(80% 60% at 50% 108%, rgba(0, 0, 0, 0.6), transparent 60%),
+    #0a0a0d;
+  overflow: hidden;
+  perspective: 1400px;
+}
+
+/* Launch wrapper — always fully visible and SHARP. No entrance animation: the
+   screenshot must read clearly the instant the case study opens (a mount
+   opacity/scale animation could get stuck at its start frame in some
+   compositing contexts and leave the phone faded/soft). */
+.ph__launch {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  opacity: 1;
+}
+
+/* Digital-space backdrop — subtle depth behind the phone */
+.ph__space {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ph__glow {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 26%, transparent),
+    color-mix(in srgb, var(--violet) 12%, transparent) 42%,
+    transparent 64%
+  );
+  filter: blur(34px);
+  opacity: 0.6;
+}
+/* Giant outline project number — matches the browser preview ghost */
+.ph__ghost.display {
+  position: absolute;
+  right: clamp(10px, 4%, 34px);
+  bottom: clamp(8px, 2%, 26px);
+  z-index: 0;
+  font-size: clamp(96px, 22vw, 220px);
+  line-height: 0.8;
+  color: var(--accent);
+  letter-spacing: 0;
+  opacity: 0.42;
+  pointer-events: none;
+}
+.ph__dust {
+  position: absolute;
+  inset: 0;
+  opacity: 0.55;
+  background-image:
+    radial-gradient(1.5px 1.5px at 18% 26%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 82% 18%, color-mix(in srgb, var(--cyan) 70%, transparent), transparent),
+    radial-gradient(1px 1px at 68% 72%, rgba(255, 255, 255, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 30% 80%, color-mix(in srgb, var(--violet) 65%, transparent), transparent),
+    radial-gradient(1px 1px at 88% 60%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(1px 1px at 12% 58%, rgba(255, 255, 255, 0.28), transparent),
+    radial-gradient(1.5px 1.5px at 50% 14%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(1px 1px at 60% 40%, color-mix(in srgb, var(--cyan) 55%, transparent), transparent);
+  animation: phDrift 22s ease-in-out infinite alternate;
+}
+@keyframes phDrift {
+  from {
+    transform: translateY(-6px);
+  }
+  to {
+    transform: translateY(6px);
+  }
+}
+.ph__launch {
+  position: relative;
+  z-index: 1;
+}
+
+/* App interface presented directly as the central showcase piece — no device */
+.ph__screen {
+  position: relative;
+  display: block;
+  height: min(94%, 620px);
+  aspect-ratio: 9 / 19.5;
+  padding: 0;
+  border: 1px solid var(--ink-10);
+  border-radius: 26px;
+  overflow: hidden;
+  background: #000;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 34px 80px -34px rgba(0, 0, 0, 0.7);
+}
+
+/* Screens — crossfade + directional slide + scale + blur */
+.ph__scr {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  opacity: 0;
+  transform: translateX(0) scale(0.985);
+  filter: blur(4px);
+  transition: opacity 0.5s ease, transform 0.52s cubic-bezier(0.5, 0, 0.15, 1),
+    filter 0.5s ease;
+  will-change: opacity, transform, filter;
+}
+.ph__scr.is-cur {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  z-index: 2;
+}
+.ph__scr.is-past {
+  transform: translateX(-16px) scale(0.985);
+}
+.ph__scr.is-future {
+  transform: translateX(16px) scale(0.985);
+}
+
+/* Hint — a compact chip centred over the screenshot, revealed on hover.
+   A light full-image scrim lifts it off the UI without hiding the app. */
+.ph__hint {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 5, 8, 0.28);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  pointer-events: none;
+}
+.ph__hint-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 24px);
+  white-space: nowrap;
+  padding: 8px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--ink-20);
+  background: rgba(10, 10, 14, 0.82);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transform: translateY(6px);
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0, 1);
+}
+.ph__screen:hover .ph__hint,
+.ph__screen:focus-visible .ph__hint {
+  opacity: 1;
+}
+.ph__screen:hover .ph__hint-chip,
+.ph__screen:focus-visible .ph__hint-chip {
+  transform: none;
+}
+.ph__hint svg {
+  color: var(--accent);
+  flex: none;
+}
+
+@media (hover: none) {
+  .ph__hint {
+    align-items: end;
+    padding-bottom: 14px;
+    background: linear-gradient(transparent 60%, rgba(5, 5, 8, 0.5));
+    opacity: 1;
+  }
+  .ph__hint-chip {
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ph__hint-chip {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ─── Editorial controls ───────────────────────────────────────────────── */
+.ph__controls {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 26px;
+  flex-wrap: wrap;
+  opacity: 1;
+}
+.ph__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ph__count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-45);
+}
+.ph__count i {
+  font-style: normal;
+  color: var(--ink-20);
+  margin: 0 3px;
+}
+.ph__scrlabel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.ph__nav {
+  display: flex;
+  gap: 22px;
+}
+.ph__navbtn {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.25s ease;
+}
+.ph__navbtn::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.ph__navbtn:hover {
+  color: var(--ink);
+}
+.ph__navbtn:hover::after {
+  transform: scaleX(1);
+}
+.ph__arr {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.ph__navbtn:hover .ph__arr--r {
+  transform: translateX(5px);
+}
+.ph__navbtn:hover .ph__arr--l {
+  transform: translateX(-5px);
+}
+
+
+/* ─── Responsive ───────────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .ph__stage {
+    min-height: clamp(420px, 68vh, 560px);
+    padding: 20px;
+  }
+  .ph__controls {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+  .ph__meta {
+    justify-content: center;
+  }
+  .ph__nav {
+    justify-content: center;
+  }
+}
+
+/* ─── Reduced motion ───────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .ph__launch,
+  .ph__controls {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    animation: none;
+  }
+  .ph__scr {
+    transition: opacity 0.25s ease;
+    filter: none;
+  }
+  .ph__scr.is-past,
+  .ph__scr.is-future {
+    transform: none;
+  }
+  .ph__dust {
+    animation: none;
+  }
+}

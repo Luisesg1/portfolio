@@ -1,0 +1,51 @@
+import { useLenis } from './lib/useLenis'
+import { Nav } from './components/Nav'
+import { Hero } from './components/Hero'
+import { Intro } from './components/Intro'
+import { Services } from './components/Services'
+import { Projects } from './components/Projects'
+import { Tech } from './components/Tech'
+import { System } from './components/System'
+import { Profile } from './components/Profile'
+import { Approach } from './components/Approach'
+import { Process } from './components/Process'
+import { Contact } from './components/Contact'
+import { GlobalCat } from './components/GlobalCat'
+import { Footer } from './components/Footer'
+import { Cursor } from './components/Cursor'
+import { ScrollProgress } from './components/ScrollProgress'
+import { Loader } from './components/Loader'
+import { Hud } from './components/Hud'
+import './styles/sections.css'
+
+export default function App() {
+  useLenis()
+
+  return (
+    <>
+      <a href="#main" className="skip-link">Saltar al contenido</a>
+      {/* shared ambient backdrop behind every section — keeps the starfield
+          continuous so the hero never "cuts" into a flat section below */}
+      <div className="page-stars" aria-hidden />
+      <Loader />
+      <ScrollProgress />
+      <Cursor />
+      <Nav />
+      <main id="main">
+        <Hero />
+        <Intro />
+        <Services />
+        <Projects />
+        <Tech />
+        <System />
+        <Profile />
+        <Approach />
+        <Process />
+        <Contact />
+      </main>
+      <Footer />
+      <Hud />
+      <GlobalCat />
+    </>
+  )
+}

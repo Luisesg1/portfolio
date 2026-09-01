@@ -1,0 +1,208 @@
+.globalcat {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 9500;
+  pointer-events: none;
+  will-change: transform;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
+}
+
+/* floating heart when the cat reaches the pointer */
+.globalcat-heart {
+  position: absolute;
+  z-index: 9600;
+  width: 15px;
+  height: 15px;
+  pointer-events: none;
+  animation: cat-heart 1s ease-out forwards;
+}
+.globalcat-heart svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: #ff6b9d;
+  filter: drop-shadow(0 0 4px rgba(255, 107, 157, 0.6));
+}
+/* floating "bring Tito back" chip — shown only while he's hidden */
+.tito-summon {
+  position: fixed;
+  left: clamp(14px, 2vw, 26px);
+  bottom: clamp(14px, 2vw, 26px);
+  /* below the case-study (10020) and image viewer (10060) overlays so Tito's
+     controls never sit on top of the app interface being showcased */
+  z-index: 9520;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 14px 9px 11px;
+  border: 1px solid var(--ink-20);
+  border-radius: 100px;
+  background: rgba(10, 10, 12, 0.85);
+  backdrop-filter: blur(8px);
+  color: var(--ink-70);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+  animation: tito-chip-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.tito-summon:hover {
+  color: var(--ink);
+  border-color: var(--violet);
+  transform: translateY(-2px);
+}
+.tito-summon svg {
+  width: 20px;
+  height: auto;
+  fill: none;
+  stroke: var(--ink-45);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: stroke 0.3s ease;
+}
+.tito-summon:hover svg { stroke: var(--violet); }
+@keyframes tito-chip-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* one-time hint: how to dismiss Tito */
+.globalcat-hint {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(20px, 4vw, 34px);
+  transform: translateX(-50%);
+  z-index: 9540;
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 12px 10px 15px;
+  border: 1px solid rgba(128, 82, 255, 0.55);
+  border-radius: 100px;
+  background: linear-gradient(rgba(18, 16, 26, 0.94), rgba(10, 10, 12, 0.94));
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 0 30px -10px var(--violet),
+    0 16px 36px -16px rgba(0, 0, 0, 0.85);
+  color: var(--ink-70);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+  animation: tito-hint-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both,
+    tito-hint-float 3.2s ease-in-out 0.5s infinite;
+}
+.globalcat-hint__cat {
+  width: 22px;
+  height: auto;
+  flex: none;
+  fill: none;
+  stroke: var(--violet);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.globalcat-hint__cat circle { fill: var(--violet); stroke: none; }
+.globalcat-hint__txt b {
+  color: var(--ink);
+  font-weight: 600;
+  background: linear-gradient(90deg, var(--violet), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.globalcat-hint__x {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 50%;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--ink-45);
+  transition: color 0.25s ease, background 0.25s ease;
+}
+.globalcat-hint:hover .globalcat-hint__x { color: var(--ink); background: rgba(255, 255, 255, 0.06); }
+.globalcat-hint.is-out {
+  animation: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px) scale(0.96);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+@keyframes tito-hint-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(14px) scale(0.96); }
+  to { opacity: 1; transform: translateX(-50%); }
+}
+@keyframes tito-hint-float {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .globalcat-hint { animation: tito-hint-in 0.4s ease both; }
+}
+
+/* right-click menu for Tito */
+.globalcat-menu {
+  position: fixed;
+  z-index: 9560;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  min-width: 170px;
+  border: 1px solid var(--ink-20);
+  border-radius: 10px;
+  background: rgba(10, 10, 12, 0.94);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.8);
+  animation: cat-menu-in 0.18s ease both;
+}
+@keyframes cat-menu-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.globalcat-menu__q {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+}
+.globalcat-menu__btn {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--ink-20);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+.globalcat-menu__btn:hover {
+  background: var(--violet);
+  border-color: var(--violet);
+  color: #fff;
+}
+
+@keyframes cat-heart {
+  0% {
+    opacity: 0;
+    transform: translateY(2px) scale(0.5);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-34px) scale(0.9);
+  }
+}

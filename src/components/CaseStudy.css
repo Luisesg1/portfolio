@@ -1,0 +1,748 @@
+.cs {
+  position: fixed;
+  inset: 0;
+  z-index: 10020;
+  background: rgba(3, 3, 4, 0.72);
+  backdrop-filter: blur(10px);
+  display: grid;
+  place-items: center;
+  padding: clamp(14px, 4vw, 48px);
+  animation: cs-bg-in 0.35s ease both;
+}
+@keyframes cs-bg-in {
+  from { background: rgba(3, 3, 4, 0); backdrop-filter: blur(0px); opacity: 0; }
+  to { background: rgba(3, 3, 4, 0.72); backdrop-filter: blur(10px); opacity: 1; }
+}
+.cs.is-out { animation: cs-bg-out 0.4s ease both; }
+@keyframes cs-bg-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+.cs__panel {
+  position: relative;
+  width: min(980px, 100%);
+  max-height: 90vh;
+  background: var(--paper-soft);
+  border: 1px solid var(--ink-20);
+  border-radius: 22px;
+  overflow: hidden;
+  animation: cs-panel-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes cs-panel-in {
+  from { opacity: 0; transform: translateY(40px); clip-path: inset(6% 4% 90% 4% round 22px); }
+  to { opacity: 1; transform: none; clip-path: inset(0% 0% 0% 0% round 22px); }
+}
+.cs.is-out .cs__panel { animation: cs-panel-out 0.4s cubic-bezier(0.55, 0, 1, 0.45) both; }
+@keyframes cs-panel-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(30px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs, .cs__panel, .cs.is-out, .cs.is-out .cs__panel { animation-duration: 0.001ms; }
+}
+.cs__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-20);
+  display: grid;
+  place-items: center;
+  background: rgba(5, 5, 5, 0.6);
+  color: var(--ink);
+  transition: background 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+.cs__close { overflow: visible; }
+.cs__close svg { transition: transform 0.35s cubic-bezier(0.2, 1, 0.3, 1); }
+.cs__close:hover {
+  background: var(--violet);
+  border-color: var(--violet);
+}
+.cs__close:hover svg { transform: rotate(90deg); }
+.cs__close-lbl {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%) translateX(6px);
+  transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.cs__close:hover .cs__close-lbl {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+.cs__scroll {
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: clamp(28px, 4vw, 56px);
+}
+
+.cs__cat { display: block; margin-bottom: 16px; }
+.cs .cs__title {
+  font-size: clamp(34px, 4.4vw, 58px);
+  line-height: 0.98;
+  margin-bottom: clamp(14px, 1.8vw, 20px);
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+/* On phones the 34px floor left long titles ("CALCULADORA", "INSTITUCIONAL")
+   right at the column edge → they clipped. Scale down so they fit with margin. */
+@media (max-width: 560px) {
+  .cs .cs__title {
+    font-size: clamp(24px, 7vw, 40px);
+  }
+}
+.cs__sub {
+  font-size: clamp(15px, 1.5vw, 18px);
+  line-height: 1.5;
+  color: var(--ink-70);
+  max-width: 560px;
+  margin-bottom: clamp(26px, 3.4vw, 40px);
+}
+.cs__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px 44px;
+  padding: 22px 0;
+  border-top: 1px solid var(--ink-20);
+  border-bottom: 1px solid var(--ink-20);
+}
+.cs__facts > div { display: flex; flex-direction: column; gap: 6px; }
+.cs__fact {
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+.cs__facts-stack { flex: 1; min-width: 200px; }
+
+/* preview */
+.cs__preview {
+  position: relative;
+  margin: clamp(28px, 4vw, 44px) 0;
+  aspect-ratio: 16 / 8;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--ink-10);
+  background:
+    radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 55%),
+    #0a0a0d;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.cs__preview-ghost.display {
+  position: absolute;
+  right: clamp(10px, 4%, 34px);
+  bottom: clamp(8px, 3%, 26px);
+  font-size: clamp(88px, 18vw, 200px);
+  line-height: 0.8;
+  color: var(--accent);
+  letter-spacing: 0;
+  opacity: 0.42;
+  pointer-events: none;
+}
+.cs__preview-bar { display: flex; align-items: center; gap: 6px; }
+.cs__preview-bar i {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--ink-20);
+}
+.cs__preview-bar em { margin-left: auto; font-style: normal; font-size: 10px; }
+.cs__preview-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+.cs__preview-head {
+  height: 40px; border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 80%, transparent);
+  opacity: 0.7; max-width: 55%;
+}
+.cs__preview-line {
+  height: 12px; border-radius: 6px; background: var(--paper-line);
+  border: 1px solid var(--ink-10); max-width: 70%;
+}
+.cs__preview-line.short { max-width: 40%; }
+.cs__preview-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 6px; }
+.cs__preview-grid span {
+  height: 40px; border-radius: 8px; background: var(--paper-line); border: 1px solid var(--ink-10);
+}
+
+/* Screenshot carousel — 3D "slab" slide inside the on-brand preview frame. */
+.cs__slab-wrap { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+.cs__slab-vp {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  display: block;
+  width: 100%;
+  perspective: 1500px;
+  transform-style: preserve-3d;
+}
+
+/* Enlarge hint — chip centred on the shot, revealed on hover */
+.cs__shot-hint {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(5, 5, 8, 0.28);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  pointer-events: none;
+}
+.cs__shot-hint-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 24px);
+  white-space: nowrap;
+  padding: 8px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--ink-20);
+  background: rgba(10, 10, 14, 0.82);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transform: translateY(6px);
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0, 1);
+}
+.cs__shot-hint-chip svg {
+  color: var(--accent);
+  flex: none;
+}
+.cs__slab-vp:hover .cs__shot-hint,
+.cs__slab-vp:focus-visible .cs__shot-hint {
+  opacity: 1;
+}
+.cs__slab-vp:hover .cs__shot-hint-chip,
+.cs__slab-vp:focus-visible .cs__shot-hint-chip {
+  transform: none;
+}
+@media (hover: none) {
+  .cs__shot-hint {
+    align-items: end;
+    padding-bottom: 12px;
+    background: linear-gradient(transparent 60%, rgba(5, 5, 8, 0.5));
+    opacity: 1;
+  }
+  .cs__shot-hint-chip {
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs__shot-hint-chip {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ─── Lightbox — wide browser screenshots full-size ────────────────────── */
+.cs__zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 10060;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 5vw, 60px);
+  background: rgba(3, 3, 5, 0.88);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  animation: csZoomIn 0.3s ease both;
+}
+@keyframes csZoomIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.cs__zoom-fig {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 100%;
+  max-height: 100%;
+}
+/* Fit view; tap enlarges the <img> (native render, sharp) and turns the wrapper
+   into a scroll box so dragging pans. */
+.cs__zoom-imgwrap {
+  max-width: min(1180px, 94vw);
+  max-height: 84vh;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--ink-10);
+  box-shadow: 0 40px 100px -30px rgba(0, 0, 0, 0.9);
+  line-height: 0;
+  cursor: zoom-in;
+  touch-action: none;
+  -webkit-overflow-scrolling: touch;
+  animation: csZoomFade 0.32s ease both;
+}
+.cs__zoom-imgwrap.is-zoomed {
+  overflow: auto;
+  cursor: zoom-out;
+  touch-action: pan-x pan-y;
+}
+.cs__zoom-img {
+  display: block;
+  width: 100%;
+  max-width: none; /* beat any global img{max-width:100%} so the enlarge width applies */
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* opacity-only fade — never touches transform, so it can't fight the pinch matrix */
+@keyframes csZoomFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.cs__zoom-hint {
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: 74px;
+  transform: translateX(-50%);
+  z-index: 3;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--ink-10);
+  background: rgba(10, 10, 14, 0.72);
+  backdrop-filter: blur(6px);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--ink-70);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+.cs__zoom-hint.is-hidden {
+  opacity: 0;
+}
+.cs__zoom-cap {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.cs__zoom-cap-meta {
+  letter-spacing: 0.16em;
+  color: var(--ink-45);
+}
+.cs__zoom-cap-name {
+  position: relative;
+  padding-left: 13px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent, var(--violet));
+}
+/* accent tick separating meta from the screen name, portfolio-style */
+/* position counter — only needed on mobile, where the meta line is hidden */
+.cs__zoom-cap-num {
+  display: none;
+  letter-spacing: 0.16em;
+  color: var(--ink-45);
+}
+.cs__zoom-cap-name::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  transform: translateY(-50%) rotate(45deg);
+  background: var(--accent, var(--violet));
+}
+.cs__zoom-close {
+  position: absolute;
+  top: clamp(16px, 3vw, 28px);
+  right: clamp(16px, 3vw, 28px);
+  z-index: 4;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-20);
+  background: rgba(5, 5, 5, 0.6);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+.cs__zoom-close:hover {
+  background: var(--violet);
+  border-color: var(--violet);
+}
+.cs__zoom-close-lbl {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.cs__zoom-close:hover .cs__zoom-close-lbl {
+  opacity: 1;
+}
+.cs__zoom-arr {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-20);
+  background: rgba(5, 5, 5, 0.5);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 26px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+.cs__zoom-arr:hover {
+  background: rgba(5, 5, 5, 0.85);
+  border-color: var(--ink-45);
+}
+.cs__zoom-arr--prev { left: clamp(10px, 4vw, 48px); }
+.cs__zoom-arr--next { right: clamp(10px, 4vw, 48px); }
+@media (max-width: 640px) {
+  /* Wide landscape shots on a portrait screen: fit to full width and let the
+     visitor pinch-to-zoom for detail. Nav arrows sit in a bottom row. */
+  .cs__zoom { padding: 12px; overflow: hidden; }
+  .cs__zoom-fig { width: 100%; }
+  /* Keep the screen name on mobile (the meta count is dropped to save space). */
+  .cs__zoom-cap { margin-top: 10px; gap: 10px; }
+  .cs__zoom-cap-meta { display: none; }
+  .cs__zoom-cap-name { font-size: 13px; letter-spacing: 0.18em; }
+  .cs__zoom-cap-num { display: inline; font-size: 12px; }
+  .cs__zoom-imgwrap { width: calc(100vw - 24px); max-width: none; max-height: 74vh; }
+  .cs__zoom-arr {
+    top: auto;
+    bottom: 14px;
+    transform: none;
+    width: 46px;
+    height: 46px;
+    font-size: 24px;
+  }
+  .cs__zoom-arr:hover { transform: none; }
+  .cs__zoom-arr--prev { left: 22px; }
+  .cs__zoom-arr--next { right: 22px; }
+  /* pinch hint */
+  .cs__zoom-hint { display: flex; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs__zoom,
+  .cs__zoom-imgwrap { animation: none; }
+}
+.cs__slab {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  backface-visibility: hidden;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+.cs__slab--enter-next { animation: slabEnterNext 0.62s cubic-bezier(0.66, 0, 0.2, 1) both; }
+.cs__slab--leave-next { animation: slabLeaveNext 0.62s cubic-bezier(0.66, 0, 0.2, 1) both; }
+.cs__slab--enter-prev { animation: slabEnterPrev 0.62s cubic-bezier(0.66, 0, 0.2, 1) both; }
+.cs__slab--leave-prev { animation: slabLeavePrev 0.62s cubic-bezier(0.66, 0, 0.2, 1) both; }
+
+@keyframes slabEnterNext {
+  from { transform: translateX(62%) rotateY(42deg) scale(0.82); opacity: 0; }
+  to   { transform: translateX(0) rotateY(0) scale(1); opacity: 1; }
+}
+@keyframes slabLeaveNext {
+  from { transform: translateX(0) rotateY(0) scale(1); opacity: 1; }
+  to   { transform: translateX(-58%) rotateY(-40deg) scale(0.82); opacity: 0; }
+}
+@keyframes slabEnterPrev {
+  from { transform: translateX(-62%) rotateY(-42deg) scale(0.82); opacity: 0; }
+  to   { transform: translateX(0) rotateY(0) scale(1); opacity: 1; }
+}
+@keyframes slabLeavePrev {
+  from { transform: translateX(0) rotateY(0) scale(1); opacity: 1; }
+  to   { transform: translateX(58%) rotateY(40deg) scale(0.82); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs__slab--enter-next, .cs__slab--leave-next,
+  .cs__slab--enter-prev, .cs__slab--leave-prev { animation: none; }
+}
+
+/* Prev / next arrows */
+.cs__shotnav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink);
+  background: color-mix(in srgb, #0a0a0d 60%, transparent);
+  border: 1px solid var(--ink-20);
+  backdrop-filter: blur(4px);
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+.cs__shotnav:hover {
+  background: color-mix(in srgb, #0a0a0d 78%, transparent);
+  border-color: var(--ink-45);
+  transform: translateY(-50%) scale(1.07);
+}
+.cs__shotnav--prev { left: 12px; }
+.cs__shotnav--next { right: 12px; }
+
+/* Position dots */
+.cs__shotbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.cs__dots {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+}
+.cs__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-20);
+  transition: background 0.25s ease, width 0.25s ease, border-radius 0.25s ease;
+}
+.cs__dot.is-on {
+  width: 18px;
+  border-radius: 3px;
+  background: var(--accent, var(--violet));
+}
+/* Screen counter — matches the Android showcase "01 / 04".
+   Dark chip so it stays legible over light browser screenshots. */
+.cs__shotcount {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--ink-45);
+  pointer-events: none;
+}
+.cs__shotcount i {
+  font-style: normal;
+  color: var(--ink-20);
+  margin: 0 3px;
+}
+/* give shots a bit more vertical room than the abstract mockup */
+.cs__preview--shot { aspect-ratio: 16 / 9; }
+
+/* ─── Editorial case-study chapters ────────────────────────────────────── */
+.cs__story {
+  margin: clamp(32px, 5vw, 56px) 0 clamp(28px, 4vw, 40px);
+  display: flex;
+  flex-direction: column;
+}
+.cs__chapter {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 2fr);
+  gap: clamp(20px, 4vw, 64px);
+  padding: clamp(26px, 3.5vw, 40px) 0;
+  border-top: 1px solid var(--ink-10);
+  /* reveal-on-view */
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0, 1);
+}
+.cs__chapter.is-in {
+  opacity: 1;
+  transform: none;
+}
+.cs__chapter-n {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: clamp(48px, 8vw, 92px);
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--ink-20);
+  transition: -webkit-text-stroke-color 0.6s ease;
+}
+.cs__chapter.is-in .cs__chapter-n {
+  -webkit-text-stroke-color: color-mix(in srgb, var(--accent, var(--violet)) 60%, var(--ink-20));
+}
+.cs__chapter-k { display: block; margin-bottom: 16px; }
+.cs__chapter-v {
+  font-size: clamp(16px, 1.6vw, 20px);
+  line-height: 1.55;
+  font-weight: 400;
+  color: var(--ink-70);
+  max-width: 640px;
+}
+
+/* [04] STACK — editorial, not badges */
+.cs__stackrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 34px;
+  margin-top: 4px;
+}
+.cs__stackitem {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.7, 0, 1), color 0.25s ease;
+  transition-delay: calc(var(--i, 0) * 70ms + 120ms);
+  color: var(--ink);
+}
+.cs__chapter.is-in .cs__stackitem {
+  opacity: 1;
+  transform: none;
+}
+.cs__stackitem:hover {
+  color: var(--accent, var(--violet));
+}
+.cs__stackitem-n {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-45);
+  letter-spacing: 0.04em;
+}
+.cs__stackitem-t {
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 720px) {
+  .cs__chapter { grid-template-columns: 1fr; gap: 12px; }
+  .cs__chapter-n { font-size: clamp(40px, 14vw, 64px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs__chapter,
+  .cs__stackitem { opacity: 1; transform: none; transition: none; }
+}
+.cs__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 1em 1.6em;
+  border-radius: 100px;
+  background: var(--violet);
+  color: #fff;
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+.cs__cta:hover { filter: brightness(1.12); transform: translateY(-2px); }
+/* Center the closing CTA on phones (editorial left-align stays on desktop). */
+@media (max-width: 720px) {
+  .cs__cta {
+    display: flex;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* "In development" status badge in the case study header */
+/* Reserve the top-right corner for the close button so the category row / WIP
+   chip / title never run underneath it — on any project, at any width. */
+.cs__head { padding-right: 44px; }
+.cs__catrow { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.cs__wip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+  border: 1px solid var(--ink-20);
+  border-radius: 100px;
+  padding: 3px 9px 3px 8px;
+}
+.cs__wip::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f5a623;
+  box-shadow: 0 0 8px rgba(245, 166, 35, 0.7);
+}
+
+.cs__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.cs__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.85em 1.3em;
+  border-radius: 100px;
+  border: 1px solid var(--ink-20);
+  color: var(--ink-70);
+  transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+.cs__link:hover {
+  color: var(--ink);
+  border-color: var(--ink-45);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 720px) {
+  .cs__blocks { grid-template-columns: 1fr; gap: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs__close:hover { transform: none; }
+}

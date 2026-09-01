@@ -1,0 +1,84 @@
+.hud {
+  position: fixed;
+  right: clamp(16px, 2vw, 30px);
+  bottom: clamp(16px, 2vw, 30px);
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 14px;
+  border: 1px solid var(--ink-10);
+  border-radius: 10px;
+  background: rgba(5, 5, 5, 0.4);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-45);
+  pointer-events: none;
+  min-width: 128px;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+/* fade out over the footer so it never covers the giant wordmark */
+.hud.is-hidden {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+}
+.hud__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 7px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid var(--ink-10);
+}
+.hud__sys {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink-70);
+  letter-spacing: 0.16em;
+}
+.hud__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: hudblink 2.4s ease-in-out infinite;
+}
+@keyframes hudblink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.hud__online { color: var(--cyan); letter-spacing: 0.16em; }
+.hud__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.hud__k { color: var(--ink-20); }
+.hud__v { color: var(--ink-70); }
+.hud__slash { color: var(--violet); }
+.hud__row--label {
+  padding: 5px 0;
+  margin-block: 2px;
+  border-block: 1px solid var(--ink-10);
+  color: var(--violet);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  justify-content: flex-start;
+  min-height: 22px;
+}
+.hud__time { color: var(--cyan); }
+
+@media (max-width: 900px) {
+  .hud { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hud__dot { animation: none; }
+}

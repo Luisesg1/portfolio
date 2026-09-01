@@ -1,0 +1,20 @@
+.scrollprogress-track {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 10001;
+  background: var(--ink-10);
+  pointer-events: none;
+}
+.scrollprogress {
+  height: 100%;
+  width: 100%;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--violet), var(--blue) 55%, var(--cyan));
+  box-shadow: 0 0 12px rgba(128, 82, 255, 0.5);
+}
+@media (prefers-reduced-motion: reduce) {
+  .scrollprogress { box-shadow: none; }
+}

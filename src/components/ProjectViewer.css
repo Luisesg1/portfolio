@@ -1,0 +1,296 @@
+/* ── Universal project viewer ─────────────────────────────────────────────
+   One premium fullscreen explorer for every project. Adapts per image
+   (portrait = framed, fit by height · landscape = wide, fit by width), never
+   deforms or crops, and shares the portfolio's dark/editorial identity. */
+
+.pv {
+  position: fixed;
+  inset: 0;
+  z-index: 10060;
+  display: grid;
+  grid-template-rows: 1fr;
+  place-items: center;
+  padding: clamp(16px, 4vw, 56px);
+  background: rgba(3, 3, 5, 0.9);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  opacity: 1; /* visible base — the animation only fades in; never leaves it hidden */
+  animation: pvFade 0.4s ease;
+}
+@keyframes pvFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Subtle violet/blue halo behind the content — ambient, never a solid block. */
+.pv__halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(760px, 84vw);
+  height: min(620px, 74vh);
+  transform: translate(-50%, -50%) scale(1);
+  background:
+    radial-gradient(closest-side at 42% 40%, color-mix(in oklab, var(--accent, #8052ff) 60%, #3b82f6), transparent 70%),
+    radial-gradient(closest-side at 62% 66%, #3b82f6, transparent 72%);
+  filter: blur(90px);
+  opacity: 0.32;
+  pointer-events: none;
+  animation: pvHalo 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes pvHalo {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  to { opacity: 0.32; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Figure — soft rise + scale on open. No bounce. */
+.pv__fig {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(14px, 2vh, 20px);
+  max-width: 100%;
+  max-height: 100%;
+  opacity: 1; /* visible base — the rise animation only enhances the entrance */
+  animation: pvRise 0.62s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes pvRise {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Slide wrapper — remounts per index; directional fade + horizontal shift. */
+.pv__slide {
+  display: flex;
+  justify-content: center;
+  min-height: 0;
+}
+.pv__slide--from-right {
+  animation: pvFromRight 0.36s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.pv__slide--from-left {
+  animation: pvFromLeft 0.36s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes pvFromRight {
+  from { opacity: 0; transform: translateX(26px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes pvFromLeft {
+  from { opacity: 0; transform: translateX(-26px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Image — always contained (width/height auto + max caps = no deform, no crop). */
+.pv__img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  border: 1px solid var(--ink-10);
+  box-shadow: 0 40px 100px -34px rgba(0, 0, 0, 0.9);
+  background: #0b0b0e;
+}
+/* Portrait (phone-like) — a device-style frame, fit by height. */
+.pv__img--portrait {
+  max-height: 82vh;
+  max-width: min(460px, 92vw);
+  border-radius: 26px;
+}
+/* Landscape (web / ERP / dashboard) — use the width. */
+.pv__img--landscape {
+  max-height: 78vh;
+  max-width: min(1180px, 94vw);
+  border-radius: 10px;
+}
+
+/* Caption / counter */
+.pv__cap {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 92vw;
+}
+.pv__count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+}
+.pv__count i {
+  font-style: normal;
+  color: var(--ink-45);
+  margin: 0 2px;
+}
+.pv__scrlabel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* Close */
+.pv__close {
+  position: absolute;
+  top: clamp(14px, 3vw, 28px);
+  right: clamp(14px, 3vw, 28px);
+  z-index: 4;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-20);
+  background: rgba(5, 5, 5, 0.6);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.pv__close:hover {
+  background: var(--violet);
+  border-color: var(--violet);
+  transform: scale(1.06);
+}
+.pv__close:active {
+  transform: scale(0.94);
+}
+.pv__close-lbl {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.pv__close:hover .pv__close-lbl {
+  opacity: 1;
+}
+
+/* Arrows */
+.pv__arr {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-20);
+  background: rgba(5, 5, 5, 0.5);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 26px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.pv__arr span {
+  display: block;
+  transition: transform 0.2s ease;
+}
+.pv__arr:hover {
+  border-color: color-mix(in oklab, var(--violet) 60%, var(--ink-20));
+  background: rgba(5, 5, 5, 0.8);
+  transform: translateY(-50%) scale(1.06);
+}
+.pv__arr--prev:hover span {
+  transform: translateX(-3px);
+}
+.pv__arr--next:hover span {
+  transform: translateX(3px);
+}
+.pv__arr:active {
+  transform: translateY(-50%) scale(0.94);
+}
+.pv__arr--prev {
+  left: clamp(10px, 4vw, 48px);
+}
+.pv__arr--next {
+  right: clamp(10px, 4vw, 48px);
+}
+
+/* Neighbour preload — present in the DOM (browser fetches) but invisible. */
+.pv__preload {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .pv {
+    padding: 14px;
+  }
+  .pv__img--portrait {
+    max-height: 74vh;
+    max-width: min(360px, 88vw);
+  }
+  .pv__img--landscape {
+    max-height: 62vh;
+    max-width: 94vw;
+  }
+  /* Arrows drop to the bottom so they never crowd or overlap the image. */
+  .pv__arr {
+    top: auto;
+    bottom: 16px;
+    transform: none;
+    width: 46px;
+    height: 46px;
+    font-size: 23px;
+  }
+  .pv__arr:hover,
+  .pv__arr:active {
+    transform: none;
+  }
+  .pv__arr--prev {
+    left: 22px;
+  }
+  .pv__arr--next {
+    right: 22px;
+  }
+  .pv__cap {
+    /* lift the caption above the bottom arrows */
+    margin-bottom: 6px;
+  }
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .pv,
+  .pv__fig,
+  .pv__slide--from-right,
+  .pv__slide--from-left {
+    animation: none;
+  }
+  .pv__halo {
+    /* keep the halo, drop its motion */
+    animation: none;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .pv__arr span,
+  .pv__arr:hover,
+  .pv__arr:active,
+  .pv__close:hover,
+  .pv__close:active {
+    transform: none;
+  }
+  .pv__arr:hover {
+    transform: translateY(-50%);
+  }
+}
