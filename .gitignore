@@ -28,3 +28,12 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# internal dev notes (kept locally, not published)
+.claude
+HANDOFF.md
+CAMBIOS.md
+CONTINUAR.md
+CONTINUAR-LIGHTBOX.md
+CONTINUAR-SHOWCASE.md
+PROMPT-proyectos.md
