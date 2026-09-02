@@ -25,8 +25,10 @@ export function Hero() {
   const fade = useTransform(scrollYProgress, [0, 0.8], [1, reduce ? 1 : 0])
   // On scroll-down the whole hero block softly fades AND blurs out; scrolling
   // back up reverses it (scroll-linked, so it works on touch without hover).
-  const contentFade = useTransform(scrollYProgress, [0, 0.55], [1, reduce ? 1 : 0])
-  const blurPx = useTransform(scrollYProgress, [0, 0.5], [0, reduce ? 0 : 9])
+  // Kept readable for most of the scroll — the blur/fade only kick in past the
+  // half-way point so the copy can actually be read on the way down.
+  const contentFade = useTransform(scrollYProgress, [0.5, 0.92], [1, reduce ? 1 : 0])
+  const blurPx = useTransform(scrollYProgress, [0.55, 0.9], [0, reduce ? 0 : 8])
   const contentFilter = useMotionTemplate`blur(${blurPx}px)`
 
   return (
