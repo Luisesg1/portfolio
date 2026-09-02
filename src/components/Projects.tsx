@@ -7,6 +7,13 @@ import { projects } from '../data/content'
 import { CaseStudy } from './CaseStudy'
 import { useT } from '../i18n/i18n'
 
+// Display order (indices into `projects`) — lead with the shipped, in-production
+// flagship. Data arrays stay in their canonical order so dict copy stays aligned
+// by index; only the rendered order and the shown number derive from this.
+const ORDER = [4, 0, 1, 2, 3] as const
+const displayNum = (originalIndex: number) =>
+  String(ORDER.indexOf(originalIndex as (typeof ORDER)[number]) + 1).padStart(2, '0')
+
 function Mockup({
   accent,
   n,
@@ -130,24 +137,28 @@ export function Projects() {
         </div>
 
         <div className="projects__list">
-          {projects.map((p, i) => (
+          {ORDER.map((oi, pos) => {
+            const p = projects[oi]
+            const it = t.projects.items[oi]
+            const num = String(pos + 1).padStart(2, '0')
+            return (
             <article
               key={p.n}
-              className={`pj ${i % 2 ? 'pj--rev' : ''}`}
+              className={`pj ${pos % 2 ? 'pj--rev' : ''}`}
               style={{ '--accent': p.accent } as React.CSSProperties}
             >
               <Reveal className="pj__media" y={40}>
                 <button
                   className="pj__open"
-                  onClick={() => setActive(i)}
+                  onClick={() => setActive(oi)}
                   data-cursor="view"
-                  aria-label={`${t.projects.viewCase}: ${p.title}`}
+                  aria-label={`${t.projects.viewCase}: ${it.title}`}
                 >
                   <Mockup
                     accent={p.accent}
-                    n={p.n}
+                    n={num}
                     image={p.images[0]}
-                    title={p.title}
+                    title={it.title}
                     device={p.device}
                   />
                 </button>
@@ -157,28 +168,32 @@ export function Projects() {
                 <Reveal className="pj__metawrap" delay={0.04}>
                   <div className="pj__meta">
                     <span className="pj__index meta">
-                      {p.n} <i>/</i> {p.category}
+                      {num} <i>/</i> {p.category}
                     </span>
                     <span className="pj__year meta">{p.year}</span>
                   </div>
-                  {p.wip && <span className="pj__wip">{t.projects.wip}</span>}
+                  {p.wip ? (
+                    <span className="pj__wip">{t.projects.wip}</span>
+                  ) : (
+                    <span className="pj__wip pj__wip--live">{t.projects.live}</span>
+                  )}
                 </Reveal>
 
                 <Reveal delay={0.1}>
                   <h3
                     className="pj__name h2"
-                    onClick={() => setActive(i)}
+                    onClick={() => setActive(oi)}
                     data-cursor="view"
                     role="button"
                     tabIndex={0}
-                    onKeyDown={(e) => e.key === 'Enter' && setActive(i)}
+                    onKeyDown={(e) => e.key === 'Enter' && setActive(oi)}
                   >
-                    {p.title}
+                    {it.title}
                   </h3>
                 </Reveal>
 
                 <Reveal delay={0.16}>
-                  <p className="pj__desc lead">{t.projects.items[i].desc}</p>
+                  <p className="pj__desc lead">{it.desc}</p>
                 </Reveal>
 
                 <Reveal delay={0.22}>
@@ -191,7 +206,7 @@ export function Projects() {
 
                 <Reveal delay={0.28}>
                   <div className="pj__actions">
-                    <button className="pj__cta" onClick={() => setActive(i)} data-cursor="view">
+                    <button className="pj__cta" onClick={() => setActive(oi)} data-cursor="view">
                       <span className="pj__cta-lbl">{t.projects.viewCase}</span>
                       <span className="pj__cta-arrow" aria-hidden>→</span>
                     </button>
@@ -202,7 +217,7 @@ export function Projects() {
                         target="_blank"
                         rel="noopener noreferrer"
                         data-cursor="link"
-                        aria-label={`${t.projects.viewRepo}: ${p.title}`}
+                        aria-label={`${t.projects.viewRepo}: ${it.title}`}
                       >
                         <Github size={15} strokeWidth={1.6} aria-hidden />
                         <span>GitHub</span>
@@ -212,7 +227,8 @@ export function Projects() {
                 </Reveal>
               </div>
             </article>
-          ))}
+            )
+          })}
         </div>
 
         <Reveal className="projects__more">
@@ -225,6 +241,7 @@ export function Projects() {
         <CaseStudy
           project={projects[active]}
           text={t.projects.items[active]}
+          num={displayNum(active)}
           labels={t.projects}
           onClose={() => setActive(null)}
         />

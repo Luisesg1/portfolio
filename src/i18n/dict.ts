@@ -83,6 +83,7 @@ export const dict = {
       viewRepo: 'Ver repositorio',
       viewDemo: 'Ver demo',
       wip: 'En desarrollo',
+      live: 'En producción',
       screen: 'Pantalla',
       image: 'Imagen',
       prevScreen: 'Anterior',
@@ -91,6 +92,7 @@ export const dict = {
       pinchHint: 'Toca para acercar',
       items: [
         {
+          title: 'Calculadora 3D',
           desc: 'App móvil para el cálculo de costos, precios y márgenes de productos fabricados mediante impresión 3D.',
           role: 'Mobile Developer',
           problem: 'Calcular el costo real de una pieza impresa en 3D es tedioso y propenso a errores: material, tiempo de máquina, energía, desgaste y margen se estimaban a mano en planillas.',
@@ -98,6 +100,7 @@ export const dict = {
           result: 'Reemplazó el cálculo manual por un flujo consistente y repetible, reduciendo errores de cotización y acelerando la entrega de precios.',
         },
         {
+          title: 'Gestión Institucional',
           desc: 'Sistema web para gestión de usuarios, roles, permisos, inventario y procesos administrativos.',
           role: 'Full Stack Developer',
           problem: 'Los procesos administrativos vivían dispersos en planillas y trámites manuales, sin control de acceso ni trazabilidad sobre quién hacía qué.',
@@ -105,6 +108,7 @@ export const dict = {
           result: 'Unificó la operación en un solo sistema con control de acceso por rol, dando estructura y trazabilidad a procesos antes manuales.',
         },
         {
+          title: 'DEFCA',
           desc: 'Proyecto tecnológico enfocado en la detección de enfermedades foliares en cultivos de avellano.',
           role: 'Desarrollador / Investigación',
           problem: 'La detección temprana de enfermedades foliares en avellano depende de inspección visual manual, lenta y difícil de escalar a lo largo de un cultivo.',
@@ -112,11 +116,20 @@ export const dict = {
           result: 'Proyecto de investigación aplicada que explora cómo la tecnología puede asistir el diagnóstico agrícola de forma más rápida y objetiva.',
         },
         {
+          title: 'Beast',
           desc: 'App de gimnasio que registra entrenamientos, records y progreso, con un coach de IA que analiza tu historial.',
           role: 'Mobile Developer',
           problem: 'Llevar el control del gym —series, PRs, RPE, volumen por músculo— a mano o en notas es tedioso y no entrega retroalimentación útil para progresar.',
           solution: 'Una app Android que registra sesiones, calcula records y 1RM, detecta músculos descuidados y suma un coach de IA (BRUX) que analiza tu historial y responde en lenguaje natural, con logros y rachas que sostienen la constancia.',
           result: 'Convierte el registro de entrenamientos en datos accionables —PRs, insights y recomendaciones— con una capa de gamificación que mantiene al usuario volviendo.',
+        },
+        {
+          title: 'Sistema de Cotizaciones',
+          desc: 'App web para gestionar cotizaciones: clientes, cálculo automático de IVA, numeración diaria y PDF profesional con firma digital.',
+          role: 'Full Stack Developer',
+          problem: 'Una empresa regional generaba cotizaciones a mano en Word/Excel, sin numeración consistente, sin registro histórico ni control de clientes: un proceso lento y propenso a errores.',
+          solution: 'App web de gestión de cotizaciones: CRUD de clientes, cálculo automático de subtotal/IVA/total, numeración diaria (AAMMDD-N), PDF profesional de una página con firma digital y datos bancarios, historial con búsqueda y duplicado, y configuración de la empresa. Autenticación con recuperación de contraseña.',
+          result: 'Sistema en producción usado por el cliente: cotizaciones generadas en segundos con formato consistente, respaldo centralizado en la nube y PDF listo para enviar. Incluye modo demo sin backend.',
         },
       ],
     },
@@ -146,11 +159,15 @@ export const dict = {
     profile: {
       tag: '[06 — Perfil]',
       t: ['Ingeniero.', 'Constructor.', 'Resuelve', 'Problemas.'],
-      lead: 'Desarrollador full stack enfocado en construir soluciones digitales sólidas y bien diseñadas. Me interesa el detalle, el rendimiento y resolver problemas reales con tecnología.',
+      lead: 'Soy desarrollador full stack, enfocado en construir soluciones digitales sólidas y bien diseñadas. Me interesa el detalle, el rendimiento y resolver problemas reales con tecnología.',
       timelineLabel: 'Trayectoria',
+      eduTag: 'Formación',
+      // Array is newest-first; the timeline is rendered reversed (oldest → newest).
+      // Display order: Analista · NTT Data · Práctica · Docente · Ingeniería.
       timeline: [
-        { year: '2026', title: 'Profesor de Tecnología (reemplazo)', place: 'Liceo Bicentenario Juvenal Hernández Jaque', tag: 'Experiencia' },
         { year: '2024–2026', title: 'Ingeniero en Informática', place: 'INACAP · Titulado 2026', tag: 'Formación' },
+        { year: '2026', title: 'Docente de Tecnología (R)', place: 'Liceo Bicentenario Juvenal Hernández Jaque', tag: 'Experiencia' },
+        { year: '2026', title: 'Práctica Profesional', place: 'Liceo Bicentenario Juvenal Hernández Jaque · May–Jul', tag: 'Experiencia' },
         { year: '2023', title: 'NTT Data — Talent Lab', place: 'Formación backend · Java · Spring Boot', tag: 'Experiencia' },
         { year: '2021–2023', title: 'Analista Programador', place: 'INACAP', tag: 'Formación' },
       ],
@@ -306,6 +323,7 @@ export const dict = {
       viewRepo: 'View repository',
       viewDemo: 'Live demo',
       wip: 'In development',
+      live: 'In production',
       screen: 'Screen',
       image: 'Image',
       prevScreen: 'Previous',
@@ -314,6 +332,7 @@ export const dict = {
       pinchHint: 'Tap to zoom',
       items: [
         {
+          title: '3D Calculator',
           desc: 'A mobile app to calculate costs, prices and margins for products made with 3D printing.',
           role: 'Mobile Developer',
           problem: 'Working out the real cost of a 3D-printed part is tedious and error-prone: material, machine time, energy, wear and margin were estimated by hand in spreadsheets.',
@@ -321,6 +340,7 @@ export const dict = {
           result: 'Replaced manual calculation with a consistent, repeatable flow — cutting quoting errors and speeding up pricing.',
         },
         {
+          title: 'Institutional Management',
           desc: 'A web system for managing users, roles, permissions, inventory and administrative processes.',
           role: 'Full Stack Developer',
           problem: 'Administrative processes were scattered across spreadsheets and manual steps, with no access control or traceability over who did what.',
@@ -328,6 +348,7 @@ export const dict = {
           result: 'Unified operations into a single system with role-based access, bringing structure and traceability to formerly manual processes.',
         },
         {
+          title: 'DEFCA',
           desc: 'A technology project focused on detecting foliar diseases in hazelnut crops.',
           role: 'Developer / Research',
           problem: 'Early detection of foliar diseases in hazelnut relies on manual visual inspection — slow and hard to scale across a crop.',
@@ -335,11 +356,20 @@ export const dict = {
           result: 'Applied research exploring how technology can assist agricultural diagnosis in a faster, more objective way.',
         },
         {
+          title: 'Beast',
           desc: 'A gym app that logs workouts, tracks records and progress, with an AI coach that analyzes your history.',
           role: 'Mobile Developer',
           problem: 'Tracking the gym —sets, PRs, RPE, per-muscle volume— by hand or in notes is tedious and gives no useful feedback to progress.',
           solution: 'An Android app that logs sessions, computes records and 1RM, flags undertrained muscles and adds an AI coach (BRUX) that analyzes your history and answers in natural language, with achievements and streaks to keep you consistent.',
           result: 'Turns workout logging into actionable data —PRs, insights and recommendations— with a gamification layer that keeps users coming back.',
+        },
+        {
+          title: 'Quotation System',
+          desc: 'A web app to manage quotes: clients, automatic tax (IVA) calculation, daily numbering and a professional PDF with digital signature.',
+          role: 'Full Stack Developer',
+          problem: 'A regional company wrote its quotes by hand in Word/Excel — no consistent numbering, no history and no client records: a slow, error-prone process.',
+          solution: 'A quotation-management web app: client CRUD, automatic subtotal/tax/total calculation, daily numbering (YYMMDD-N), a one-page professional PDF with digital signature and bank details, searchable history with duplication, and company settings. Authentication with password recovery.',
+          result: 'A system in production used by the client: quotes generated in seconds with a consistent format, centralized cloud backup and a ready-to-send PDF. Includes a backend-free demo mode.',
         },
       ],
     },
@@ -369,11 +399,15 @@ export const dict = {
     profile: {
       tag: '[06 — Profile]',
       t: ['Engineer.', 'Builder.', 'Problem', 'Solver.'],
-      lead: 'Full stack developer focused on building solid, well-designed digital solutions. I care about detail, performance and solving real problems with technology.',
+      lead: "I'm a full stack developer, focused on building solid, well-designed digital solutions. I care about detail, performance and solving real problems with technology.",
       timelineLabel: 'Timeline',
+      eduTag: 'Education',
+      // Array is newest-first; rendered reversed (oldest → newest).
+      // Display order: Programmer Analyst · NTT Data · Internship · Teacher · Engineering.
       timeline: [
-        { year: '2026', title: 'Technology Teacher (substitute)', place: 'Liceo Bicentenario Juvenal Hernández Jaque', tag: 'Experience' },
         { year: '2024–2026', title: 'Computer Engineering', place: 'INACAP · Graduated 2026', tag: 'Education' },
+        { year: '2026', title: 'Technology Teacher (R)', place: 'Liceo Bicentenario Juvenal Hernández Jaque', tag: 'Experience' },
+        { year: '2026', title: 'Professional Internship', place: 'Liceo Bicentenario Juvenal Hernández Jaque · May–Jul', tag: 'Experience' },
         { year: '2023', title: 'NTT Data — Talent Lab', place: 'Backend training · Java · Spring Boot', tag: 'Experience' },
         { year: '2021–2023', title: 'Programmer Analyst', place: 'INACAP', tag: 'Education' },
       ],

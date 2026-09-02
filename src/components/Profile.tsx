@@ -1,4 +1,5 @@
 import { Reveal, MaskLine } from './Reveal'
+import { Timeline } from './Timeline'
 import { useT } from '../i18n/i18n'
 
 export function Profile() {
@@ -40,24 +41,12 @@ export function Profile() {
           </div>
         </div>
 
-        {/* horizontal trajectory timeline (full width) */}
-        <div className="profile__block profile__block--tl">
-          <span className="meta profile__block-label">{t.profile.timelineLabel}</span>
-          <div className="profile__timeline">
-            <span className="profile__timeline-line" aria-hidden />
-            {[...t.profile.timeline].reverse().map((tl, i) => (
-              <Reveal key={tl.title} delay={0.08 + i * 0.05} className="tl">
-                <span className="tl__node" aria-hidden />
-                <span className="tl__year">{tl.year}</span>
-                <h3 className="tl__title">{tl.title}</h3>
-                <span className="meta tl__place">{tl.place}</span>
-                <span className={`tl__tag ${tl.tag === t.profile.timeline[1].tag ? 'tl__tag--edu' : ''}`}>
-                  {tl.tag}
-                </span>
-              </Reveal>
-            ))}
-          </div>
-        </div>
+        {/* editorial career timeline (full width) */}
+        <Timeline
+          items={[...t.profile.timeline].reverse()}
+          eduTag={t.profile.eduTag}
+          label={t.profile.timelineLabel}
+        />
       </div>
     </section>
   )

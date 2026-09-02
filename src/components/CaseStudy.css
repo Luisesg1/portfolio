@@ -602,12 +602,11 @@
   font-size: clamp(48px, 8vw, 92px);
   line-height: 0.9;
   letter-spacing: 0;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--ink-20);
-  transition: -webkit-text-stroke-color 0.6s ease;
+  color: var(--ink-20);
+  transition: color 0.6s ease;
 }
 .cs__chapter.is-in .cs__chapter-n {
-  -webkit-text-stroke-color: color-mix(in srgb, var(--accent, var(--violet)) 60%, var(--ink-20));
+  color: color-mix(in srgb, var(--accent, var(--violet)) 70%, var(--ink-20));
 }
 .cs__chapter-k { display: block; margin-bottom: 16px; }
 .cs__chapter-v {
@@ -712,6 +711,10 @@
   border-radius: 50%;
   background: #f5a623;
   box-shadow: 0 0 8px rgba(245, 166, 35, 0.7);
+}
+.cs__wip--live::before {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
 }
 
 .cs__links {

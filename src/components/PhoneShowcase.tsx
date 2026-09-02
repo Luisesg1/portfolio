@@ -15,14 +15,12 @@ export function PhoneShowcase({
   screens,
   accent,
   title,
-  number,
   labels,
 }: {
   images: readonly string[]
   screens: readonly string[]
   accent: string
   title: string
-  number: string
   labels: { screen: string; prev: string; next: string; hint: string }
 }) {
   const [active, setActive] = useState(0)
@@ -65,7 +63,6 @@ export function PhoneShowcase({
           <span className="ph__glow" />
           <span className="ph__dust" />
         </div>
-        <span className="ph__ghost display" aria-hidden>{number}</span>
         <div className="ph__launch">
           <button
             className="ph__screen"

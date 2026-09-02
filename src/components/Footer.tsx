@@ -266,13 +266,13 @@ export function Footer() {
     // origin = the button itself, so the fortune line rises from here (not screen center)
     const r = e.currentTarget.getBoundingClientRect()
     const origin: Origin = { x: r.left + r.width / 2, y: r.top }
-    // black hole is very rare (~3%) — it resets the scroll, too disruptive to hit often
+    // black hole is very rare (~1%) — it resets the scroll, too disruptive to hit often
     const roll = Math.random()
-    if (roll < 0.03) {
+    if (roll < 0.01) {
       fxBlackHole()
       return
     }
-    // fortune line dominates (~70%) — user wants more phrases than effects
+    // fortune line dominates (~72%) — user wants more phrases than effects
     if (roll < 0.73) {
       fxFortune(origin)
       return

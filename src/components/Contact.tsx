@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Reveal, MaskLine } from './Reveal'
 import { Github, Linkedin, Mail, MessageCircle, Check } from 'lucide-react'
 import { ParticleField } from './ParticleField'
@@ -210,6 +210,14 @@ function Field({
 
 export function Contact() {
   const t = useT()
+  // The starfield here is purely decorative and the hero already showcases one.
+  // On touch devices a second full-height canvas (≈375×1760 filled every frame)
+  // spikes GPU/memory enough that mobile Chrome can discard + reload the tab when
+  // you scroll into this section — so skip it entirely on touch.
+  const [showViz, setShowViz] = useState(true)
+  useEffect(() => {
+    setShowViz(!window.matchMedia('(pointer: coarse)').matches)
+  }, [])
   const channels = [
     { icon: Mail, label: 'Email', value: EMAIL, href: `mailto:${EMAIL}` },
     { icon: MessageCircle, label: 'WhatsApp', value: t.contact.whatsapp, href: 'https://wa.me/56988823245' },
@@ -219,9 +227,11 @@ export function Contact() {
 
   return (
     <section id="contact" className="section contact">
-      <div className="contact__viz" aria-hidden>
-        <ParticleField className="contact__canvas" density={0.5} interactive={false} />
-      </div>
+      {showViz && (
+        <div className="contact__viz" aria-hidden>
+          <ParticleField className="contact__canvas" density={0.5} interactive={false} />
+        </div>
+      )}
       <div className="shell">
         <Reveal>
           <span className="tag">{t.contact.tag}</span>
@@ -243,7 +253,7 @@ export function Contact() {
               <span className="meta contact__sign-role">{t.footer.role}</span>
             </span>
             <a
-              href="/cv.pdf"
+              href="/Luis-Eduardo-Soto-Gutierrez-CV.pdf"
               download="Luis-Eduardo-Soto-Gutierrez-CV.pdf"
               className="contact__cv"
               data-cursor="link"

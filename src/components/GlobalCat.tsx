@@ -126,6 +126,9 @@ export function GlobalCat() {
       tx = lastCX + window.scrollX
       ty = lastCY + window.scrollY + 30
       idleSince = performance.now()
+      // resume the loop if it paused itself after going idle (saves battery/CPU
+      // on mobile, where the rAF was previously running non-stop even at rest)
+      start()
     }
 
     function spawnHeart() {
@@ -190,6 +193,13 @@ export function GlobalCat() {
       }
 
       place()
+      // once the cat has caught the pointer and the heart has played, stop the
+      // loop entirely until the next pointer move / scroll wakes it via
+      // retarget(). No reason to burn frames on a cat that's standing still.
+      if (dist <= 28 && reacted && now - idleSince > 1600) {
+        running = false
+        return
+      }
       raf = requestAnimationFrame(tick)
     }
 
@@ -324,6 +334,8 @@ export function GlobalCat() {
     }
 
     const hitTito = (clientX: number, clientY: number) => {
+      // hidden Tito has no hitbox — never open the hide menu over empty space
+      if (isHidden() || canvas!.style.display === 'none') return false
       const left = x - cw / 2 - window.scrollX
       const top = y - ch + bob - window.scrollY
       const pad = 16

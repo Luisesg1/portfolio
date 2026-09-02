@@ -197,7 +197,7 @@
   /* solid fill (color set inline per project accent); neutral spacing */
   letter-spacing: 0;
   pointer-events: none;
-  opacity: 0.9;
+  opacity: 1;
 }
 /* `.display` sets its own font-size — beat it so the number reads at the size
    we want and sits fully inside the card (never clipped to a sliver). */
@@ -387,6 +387,10 @@
   border-radius: 50%;
   background: #f5a623;
   box-shadow: 0 0 8px rgba(245, 166, 35, 0.7);
+}
+.pj__wip--live::before {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
 }
 
 .pj__name {
@@ -620,99 +624,6 @@
   margin-bottom: 6px;
   border-bottom: 1px solid var(--ink-20);
 }
-/* horizontal trajectory timeline */
-.profile__block--tl { margin-top: clamp(48px, 7vw, 96px); }
-.profile__timeline {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(18px, 3vw, 44px);
-  padding-top: 30px;
-}
-.profile__timeline-line {
-  position: absolute;
-  left: 5px;
-  right: 5px;
-  top: 5px;
-  height: 1px;
-  background: linear-gradient(90deg, var(--ink-10), var(--ink-20) 45%, var(--violet));
-}
-.tl {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 26px;
-}
-.tl__node {
-  position: absolute;
-  top: 1px;
-  left: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--paper);
-  border: 1px solid var(--ink-45);
-  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
-}
-.tl:last-child .tl__node {
-  background: var(--violet);
-  border-color: var(--violet);
-  box-shadow: 0 0 0 4px rgba(128, 82, 255, 0.14);
-}
-.tl:hover .tl__node {
-  background: var(--violet);
-  border-color: var(--violet);
-}
-.tl__year {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--violet);
-}
-.tl__title {
-  font-weight: 500;
-  font-size: clamp(16px, 1.5vw, 20px);
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-}
-.tl__place { color: var(--ink-45); }
-.tl__tag {
-  align-self: flex-start;
-  margin-top: 4px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: var(--violet);
-  color: #fff;
-  padding: 3px 9px;
-  border-radius: 100px;
-  white-space: nowrap;
-}
-.tl__tag--edu {
-  background: transparent;
-  color: var(--ink-45);
-  border: 1px solid var(--ink-20);
-}
-@media (max-width: 900px) {
-  .profile__timeline { grid-template-columns: 1fr 1fr; gap: 28px 24px; }
-}
-@media (max-width: 520px) {
-  .profile__timeline { grid-template-columns: 1fr; }
-  .profile__timeline-line { display: none; }
-  .tl { padding-top: 4px; padding-left: 26px; }
-  .tl__node { top: 5px; }
-  .tl__node::after {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: 12px;
-    width: 1px;
-    height: 60px;
-    background: var(--ink-10);
-  }
-}
 .profile__certs {
   list-style: none;
   display: flex;
@@ -837,17 +748,14 @@
 }
 .proc__n {
   font-weight: 500;
-  /* non-negative so the outlined 2-digit numbers don't overlap into seams */
   letter-spacing: 0;
   font-size: clamp(44px, 8vw, 120px);
   line-height: 0.8;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--ink-20);
-  transition: color 0.4s ease, -webkit-text-stroke 0.4s ease;
+  color: var(--ink-20);
+  transition: color 0.4s ease;
 }
 .proc:hover .proc__n {
-  color: transparent;
-  -webkit-text-stroke-color: var(--violet);
+  color: var(--violet);
 }
 .proc__body { max-width: 560px; padding-top: clamp(6px, 1.4vw, 18px); }
 .proc__title {

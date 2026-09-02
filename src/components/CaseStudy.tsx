@@ -151,11 +151,13 @@ function SlabShot({
 export function CaseStudy({
   project,
   text,
+  num,
   labels,
   onClose,
 }: {
   project: Project
   text: ProjText
+  num: string
   labels: Labels
   onClose: () => void
 }) {
@@ -241,7 +243,7 @@ export function CaseStudy({
       onClick={close}
       role="dialog"
       aria-modal="true"
-      aria-label={`${project.title} — case study`}
+      aria-label={`${text.title} — case study`}
     >
       <article ref={panelRef} className="cs__panel" onClick={(e) => e.stopPropagation()}>
         <button className="cs__close" onClick={close} aria-label="Cerrar" data-cursor="link">
@@ -253,11 +255,15 @@ export function CaseStudy({
           <header className="cs__head">
             <span className="cs__catrow">
               <span className="meta cs__cat">
-                {project.n} — {project.category}
+                {num} — {project.category}
               </span>
-              {project.wip && <span className="cs__wip">{labels.wip}</span>}
+              {project.wip ? (
+                <span className="cs__wip">{labels.wip}</span>
+              ) : (
+                <span className="cs__wip cs__wip--live">{labels.live}</span>
+              )}
             </span>
-            <h2 className="cs__title display-2">{project.title}</h2>
+            <h2 className="cs__title display-2">{text.title}</h2>
             <p className="cs__sub">{text.desc}</p>
             <div className="cs__facts">
               <div>
@@ -280,8 +286,7 @@ export function CaseStudy({
               images={project.images}
               screens={project.screens}
               accent={project.accent}
-              title={project.title}
-              number={project.n}
+              title={text.title}
               labels={{
                 screen: labels.screen,
                 prev: labels.prevScreen,
@@ -294,7 +299,11 @@ export function CaseStudy({
               className={`cs__preview ${project.images.length ? 'cs__preview--shot' : ''}`}
               style={{ '--accent': project.accent } as React.CSSProperties}
             >
-              <span className="cs__preview-ghost display">{project.n}</span>
+              {/* The oversized ghost number only reads on the placeholder card;
+                  a real screenshot fills the slab and hides it, so skip it there. */}
+              {!project.images.length && (
+                <span className="cs__preview-ghost display">{num}</span>
+              )}
               <div className="cs__preview-bar">
                 <i /><i /><i />
                 <em className="meta">luis-soto / {project.title.toLowerCase().replace(/\s+/g, '-')}</em>
@@ -304,7 +313,7 @@ export function CaseStudy({
                   images={project.images}
                   screens={project.screens}
                   accent={project.accent}
-                  title={project.title}
+                  title={text.title}
                   unit={labels.image}
                   hint={labels.zoomHint}
                   prev={labels.prevScreen}

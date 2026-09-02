@@ -45,11 +45,26 @@ export function ParticleField({ className, density = 1, interactive = true }: Pr
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const cores = navigator.hardwareConcurrency || 8
-    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    // On touch there's no hover, so pointer parallax does nothing — treat every
+    // field as "decorative" there. Decorative fields use a smaller backing store
+    // and fewer particles, which keeps phones from janking (mobile GPUs choke on
+    // a dpr-2 canvas full of shadow-blurred specks).
+    const touch = window.matchMedia('(pointer: coarse)').matches
+    const cheap = !interactive || touch
+    const dpr = Math.min(window.devicePixelRatio || 1, cheap ? 1 : 2)
 
     let w = 0
     let h = 0
     let particles: P[] = []
+    // per-frame draw-position buffers — allocated once per resize (not per frame)
+    // to avoid GC churn that shows up as jank/flicker on heavier sections.
+    let px = new Float32Array(0)
+    let py = new Float32Array(0)
+    // spatial grid for connections — buckets reused across frames (cleared, not
+    // reallocated) so we don't churn thousands of arrays per second.
+    let gCols = 1
+    let gRows = 1
+    let grid: number[][] = []
     let ambient: { x: number; y: number; r: number; c: string; dx: number; dy: number }[] = []
 
     // eased pointer offset (parallax)
@@ -73,6 +88,11 @@ export function ParticleField({ className, density = 1, interactive = true }: Pr
       if (cores <= 4) {
         cap = Math.round(cap * 0.6)
         floor = Math.round(floor * 0.6)
+      }
+      // decorative fields (and everything on touch) carry roughly half the specks
+      if (cheap) {
+        cap = Math.round(cap * 0.5)
+        floor = Math.round(floor * 0.5)
       }
       return Math.max(floor, Math.min(Math.round(base * density), cap))
     }
@@ -129,6 +149,11 @@ export function ParticleField({ className, density = 1, interactive = true }: Pr
       canvas!.height = Math.round(h * dpr)
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0)
       particles = Array.from({ length: targetCount() }, makeParticle)
+      px = new Float32Array(particles.length)
+      py = new Float32Array(particles.length)
+      gCols = Math.max(1, Math.ceil(w / connDist))
+      gRows = Math.max(1, Math.ceil(h / connDist))
+      grid = Array.from({ length: gCols * gRows }, () => [])
       buildAmbient()
     }
 
@@ -164,10 +189,8 @@ export function ParticleField({ className, density = 1, interactive = true }: Pr
       pointer.x += (pointer.tx - pointer.x) * 0.05
       pointer.y += (pointer.ty - pointer.y) * 0.05
 
-      // update + collect draw positions
+      // update + collect draw positions (buffers reused across frames)
       const n = particles.length
-      const px = new Float32Array(n)
-      const py = new Float32Array(n)
 
       for (let i = 0; i < n; i++) {
         const p = particles[i]
@@ -189,15 +212,15 @@ export function ParticleField({ className, density = 1, interactive = true }: Pr
 
       // ---- rare, faint connections (spatial grid, only near-depth) ----
       const cell = connDist
-      const cols = Math.max(1, Math.ceil(w / cell))
-      const rows = Math.max(1, Math.ceil(h / cell))
-      const grid: number[][] = new Array(cols * rows)
+      const cols = gCols
+      const rows = gRows
+      for (let k = 0; k < grid.length; k++) grid[k].length = 0
       for (let i = 0; i < n; i++) {
         if (particles[i].z < 0.45) continue // only connect nearer specks
         const cx = Math.min(cols - 1, Math.max(0, (px[i] / cell) | 0))
         const cy = Math.min(rows - 1, Math.max(0, (py[i] / cell) | 0))
         const key = cy * cols + cx
-        ;(grid[key] || (grid[key] = [])).push(i)
+        grid[key].push(i)
       }
       ctx!.lineWidth = 0.5
       for (let i = 0; i < n; i++) {
@@ -304,13 +327,18 @@ export function ParticleField({ className, density = 1, interactive = true }: Pr
 
     let resizeT = 0
     const onResize = () => {
+      // Ignore height-only changes (mobile keyboard opening/closing). Rebuilding
+      // the whole field on every keystroke made the starfield flash ("se
+      // actualiza") while typing in the contact form.
+      if (Math.abs(canvas!.getBoundingClientRect().width - w) < 1) return
       clearTimeout(resizeT)
       resizeT = window.setTimeout(resize, 200)
     }
     window.addEventListener('resize', onResize)
 
     let move: (e: PointerEvent) => void = () => {}
-    if (interactive) {
+    const wantMove = interactive && !touch
+    if (wantMove) {
       move = (e: PointerEvent) => {
         // normalized -1..1 from viewport center
         pointer.tx = (e.clientX / window.innerWidth) * 2 - 1
@@ -324,7 +352,7 @@ export function ParticleField({ className, density = 1, interactive = true }: Pr
       io.disconnect()
       document.removeEventListener('visibilitychange', onVis)
       window.removeEventListener('resize', onResize)
-      if (interactive) window.removeEventListener('pointermove', move)
+      if (wantMove) window.removeEventListener('pointermove', move)
     }
   }, [density, interactive])
 

@@ -56,19 +56,6 @@
   filter: blur(34px);
   opacity: 0.6;
 }
-/* Giant outline project number — matches the browser preview ghost */
-.ph__ghost.display {
-  position: absolute;
-  right: clamp(10px, 4%, 34px);
-  bottom: clamp(8px, 2%, 26px);
-  z-index: 0;
-  font-size: clamp(96px, 22vw, 220px);
-  line-height: 0.8;
-  color: var(--accent);
-  letter-spacing: 0;
-  opacity: 0.42;
-  pointer-events: none;
-}
 .ph__dust {
   position: absolute;
   inset: 0;

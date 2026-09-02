@@ -1,0 +1,241 @@
+/* ============================================================================
+   Editorial career timeline
+   Mobile-first: vertical spine on the left, content on the right.
+   Desktop (>= 780px): horizontal rail, nodes across, content dropping below.
+   Progress fill + node states are transform/opacity only (GPU-friendly).
+   ========================================================================== */
+
+.tline {
+  margin-top: clamp(40px, 6vw, 88px);
+}
+
+.tline__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: clamp(20px, 3vw, 34px);
+  border-bottom: 1px solid var(--ink-10);
+}
+.tline__label {
+  color: var(--ink-45);
+  letter-spacing: 0.22em;
+}
+.tline__counter {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+  color: var(--ink-70);
+}
+.tline__counter i {
+  font-style: normal;
+  color: var(--ink-20);
+  margin: 0 2px;
+}
+
+/* ---------- shared rail ---------- */
+.tline__grid {
+  position: relative;
+}
+.tline__rail {
+  position: absolute;
+  background: var(--ink-10);
+  pointer-events: none;
+}
+.tline__rail-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(var(--rail-angle, 180deg), var(--violet), var(--cyan) 140%);
+  transform-origin: var(--fill-origin, top);
+  transform: var(--fill-transform, scaleY(var(--p, 0)));
+}
+
+/* ---------- node ---------- */
+.tline__node {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bg, #0a0a0d);
+  border: 1px solid var(--ink-45);
+  display: grid;
+  place-items: center;
+  transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+  z-index: 2;
+}
+.tline__node-core {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--violet);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.tline__item.is-active .tline__node {
+  border-color: var(--violet);
+  transform: scale(1.18);
+  box-shadow: 0 0 0 4px rgba(128, 82, 255, 0.12), 0 0 10px rgba(128, 82, 255, 0.35);
+}
+.tline__item.is-active .tline__node-core {
+  opacity: 1;
+  transform: scale(1);
+}
+.tline__item.is-dim {
+  opacity: 0.62;
+  transition: opacity 0.35s ease;
+}
+
+/* ---------- content hierarchy ---------- */
+.tline__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.tline__year {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--violet);
+}
+.tline__title {
+  margin: 8px 0 6px;
+  font-weight: 600;
+  font-size: clamp(17px, 1.5vw, 21px);
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+  color: var(--ink);
+  transition: color 0.3s ease;
+}
+.tline__place {
+  color: var(--ink-45);
+  line-height: 1.4;
+  max-width: 32ch;
+}
+.tline__tag {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--violet) 90%, #000);
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.tline__tag--edu {
+  background: transparent;
+  color: var(--ink-45);
+  border: 1px solid var(--ink-20);
+}
+
+/* ============================================================================
+   MOBILE — vertical spine (default)
+   ========================================================================== */
+.tline__grid {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(30px, 7vw, 46px);
+  padding-top: clamp(24px, 5vw, 34px);
+}
+.tline__rail {
+  left: 6px;
+  top: clamp(24px, 5vw, 34px);
+  bottom: 8px;
+  width: 1.5px;
+  --rail-angle: 180deg;
+  --fill-origin: top;
+  --fill-transform: scaleY(var(--p, 0));
+}
+.tline__item {
+  position: relative;
+  padding-left: 34px;
+}
+.tline__node {
+  left: 0;
+  top: 3px;
+}
+.tline__connector {
+  display: none;
+}
+
+/* ============================================================================
+   DESKTOP — horizontal rail (>= 780px)
+   ========================================================================== */
+@media (min-width: 780px) {
+  .tline__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr));
+    gap: 0;
+    padding-top: clamp(30px, 3vw, 40px);
+  }
+  /* rail runs from the first node to the last, both sitting above the start of
+     their entry's text; nodes are evenly spaced (one per equal column). */
+  .tline__rail {
+    top: clamp(30px, 3vw, 40px);
+    left: 6px;
+    right: calc(100% / var(--n) - 6px);
+    bottom: auto;
+    width: auto;
+    height: 1.5px;
+    --rail-angle: 90deg;
+    --fill-origin: left;
+    --fill-transform: scaleX(var(--p, 0));
+  }
+  /* content left-aligned, node sitting above the start of the text */
+  .tline__item {
+    padding: 0 clamp(16px, 1.8vw, 28px) 0 0;
+    text-align: left;
+  }
+  .tline__node {
+    left: 0;
+    top: -6px;
+  }
+  /* vertical drop from the rail down to the content */
+  .tline__connector {
+    display: block;
+    position: absolute;
+    left: 5.5px;
+    top: 8px;
+    width: 1px;
+    height: 20px;
+    background: var(--ink-10);
+  }
+  .tline__item.is-active .tline__connector {
+    background: color-mix(in srgb, var(--violet) 50%, var(--ink-10));
+  }
+  .tline__body {
+    padding-top: 40px;
+    align-items: flex-start;
+  }
+  .tline__title {
+    font-size: clamp(16px, 1.35vw, 20px);
+  }
+  .tline__place {
+    max-width: 24ch;
+  }
+}
+
+/* generous mid-range spacing before the horizontal packs too tight */
+@media (min-width: 780px) and (max-width: 1024px) {
+  .tline__title {
+    font-size: 16px;
+  }
+  .tline__place {
+    font-size: 12px;
+    max-width: 20ch;
+  }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .tline__rail-fill {
+    transform: none;
+  }
+  .tline__node,
+  .tline__node-core,
+  .tline__item.is-active .tline__node {
+    transition: none;
+    transform: none;
+  }
+}
